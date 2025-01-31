@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\FotoController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +14,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('users/logout', [UserController::class, 'logout'])->name('users.logout');
+    Route::resource('foto', FotoController::class);
+    Route::resource('album', AlbumController::class);
 });
 
 Route::resource('users', UserController::class);

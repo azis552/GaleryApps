@@ -3,27 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlbumFoto;
-use App\Models\Foto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class BerandaController extends Controller
+class AlbumController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        if (Auth::check()) {
-            $album = AlbumFoto::where('users_id', Auth::user()->id)->get();
-            $fotos = Foto::all();
-        }else
-        {
-            $album = null;
-            $fotos = Foto::all();
-        }
-        
-        return view('beranda', compact('album', 'fotos'));
+        //
     }
 
     /**
@@ -39,7 +29,20 @@ class BerandaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = $request->validate([
+            'album' => 'required',
+            'deskripsi' => 'required',
+        ]);
+        $validation['users_id'] = Auth::user()->id;
+        $album = AlbumFoto::create($validation);
+
+        if ($album) {
+            return redirect()->route('beranda.index')->with('success', 'Album berhasil ditambahkan');
+        }else{
+            return redirect()->route('beranda.index')->with('error', 'Album gagal ditambahkan');
+        }
+
+
     }
 
     /**
