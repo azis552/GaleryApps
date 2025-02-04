@@ -6,5 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class LikeFoto extends Model
 {
-    //
+    protected $guarded = ['id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'users_id');
+    }
+
+    public function foto()
+    {
+        return $this->belongsTo(Foto::class,'fotos_id');
+    }
 }

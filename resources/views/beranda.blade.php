@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="">Deskripsi</label>
-                                    <textarea name="deskripsi" class="form-control" id="" cols="30" rows="10" ></textarea>
+                                    <textarea name="deskripsi" class="form-control" id="" cols="30" rows="10"></textarea>
                                 </div>
                                 <label for="">Status</label>
                                 <select name="status" id="" class="form-control">
@@ -45,8 +45,8 @@
                                         <option value="{{ $item->id }}">{{ $item->album }}</option>
                                     @endforeach
                                 </select>
-                                
-                                
+
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -56,8 +56,8 @@
                     </div>
                 </div>
             </div>
-             <!-- Button trigger modal -->
-             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahAlbumFoto">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahAlbumFoto">
                 Tambah Album Foto
             </button>
             <!-- Modal -->
@@ -80,7 +80,7 @@
                                     <label for="">Deskripsi</label>
                                     <input type="text" class="form-control" name="deskripsi">
                                 </div>
-                                
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -91,25 +91,173 @@
                 </div>
             </div>
         @endif
-
-            <div class="row">
-                @if ($fotos->isEmpty())
-                    <div class="alert alert-danger">Tidak Ada Foto</div>
-                @endif
-                @foreach ($fotos as $item)
-                <div class="col">
-                    <div class="card mt-2" style="width: 18rem;">
-                        <img src="{{ asset('storage/images/'.$item->foto) }}" style="text-align: center;width: 285px; height: 200px;"
-                            class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $item->judul }}</h5>
-                            <p class="card-text">{{ $item->deskripsi }}</p>
-                            <a href="#" class="btn btn-primary">Show</a>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                <img src="..." id="foto" class="img-fluid" alt="...">
+                            </div>
+                            <div class="col">
+                                <label for="">Dibuat Oleh :</label>
+                                <label for="" class="form-label" id="name">author</label>
+                                <hr>
+                                <label for="" class="form-label" id="judul">Caption</label>
+                                <hr>
+                                <label for="" class="form-label" id="deskripsi">Deskripsi</label>
+                                <hr>
+                                <label for="">Komentar</label>
+                            </div>
                         </div>
                     </div>
                 </div>
-                @endforeach
             </div>
-        
+        </div>
+        <div class="row">
+            @if ($fotos->isEmpty())
+                <div class="alert alert-danger">Tidak Ada Foto</div>
+            @endif
+            @foreach ($fotos as $item)
+                <div class="col">
+                    <div class="card mt-2" style="width: 18rem;">
+                        <img src="{{ asset('storage/images/' . $item->foto) }}"
+                            style="text-align: center;width: 285px; height: 200px;" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $item->judul }}</h5>
+                            <p class="card-text">{{ $item->deskripsi }}</p>
+                            <p>{{ $item->user->nama_lengkap }}</p>
+
+                            <hr>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <!-- Button trigger modal -->
+
+                                <button type="button" class="btn btn-primary show" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal" data-judul = "{{ $item->judul }}"
+                                    data-deskripsi = "{{ $item->deskripsi }}" data-foto = "{{ $item->foto }}"
+                                    data-nama = "{{ $item->user->nama_lengkap }}" data-id = "{{ $item->id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5" />
+                                    </svg>
+                                </button>
+                                @if (Auth::check() == true)
+                                    @if ($item->likes->contains('users_id', Auth::id()) == false)
+                                        {{-- button like --}}
+                                        <button type="button" class="btn btn-outline-dark like"
+                                            data-id="{{ $item->id }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 48 48">
+                                                <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="4"
+                                                    d="M15 8C8.925 8 4 12.925 4 19c0 11 13 21 20 23.326C31 40 44 30 44 19c0-6.075-4.925-11-11-11c-3.72 0-7.01 1.847-9 4.674A10.99 10.99 0 0 0 15 8" />
+                                            </svg>
+                                        </button>
+                                    @else
+                                        {{-- button unlike --}}
+                                        <button type="button" class="btn btn-outline-dark unlike"
+                                            data-id="{{ $item->id }}"
+                                            >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 48 48">
+                                                <path fill="#f44336"
+                                                    d="M34 9c-4.2 0-7.9 2.1-10 5.4C21.9 11.1 18.2 9 14 9C7.4 9 2 14.4 2 21c0 11.9 22 24 22 24s22-12 22-24c0-6.6-5.4-12-12-12" />
+                                            </svg>
+                                        </button>
+                                    @endif
+                                @endif
+
+                                <button type="button" class="btn btn-outline-dark">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24">
+                                        <g fill="none" stroke="#c13304" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2">
+                                            <path stroke-dasharray="72" stroke-dashoffset="72"
+                                                d="M3 19.5v-15.5c0 -0.55 0.45 -1 1 -1h16c0.55 0 1 0.45 1 1v12c0 0.55 -0.45 1 -1 1h-14.5Z">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s"
+                                                    values="72;0" />
+                                            </path>
+                                            <path stroke-dasharray="10" stroke-dashoffset="10" d="M8 7h8">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s"
+                                                    dur="0.2s" values="10;0" />
+                                            </path>
+                                            <path stroke-dasharray="10" stroke-dashoffset="10" d="M8 10h8">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="1s"
+                                                    dur="0.2s" values="10;0" />
+                                            </path>
+                                            <path stroke-dasharray="6" stroke-dashoffset="6" d="M8 13h4">
+                                                <animate fill="freeze" attributeName="stroke-dashoffset" begin="1.3s"
+                                                    dur="0.2s" values="6;0" />
+                                            </path>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
     </div>
+@endsection
+
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $('.show').on('click', function() {
+                var id = $(this).data('id');
+                var judul = $(this).data('judul');
+                var deskripsi = $(this).data('deskripsi');
+                var author = $(this).data('nama');
+                var foto = $(this).data('foto');
+                $('#exampleModalLabel').text(judul);
+                $('#foto').attr('src', "{{ asset('storage/images/') }}/" + foto);
+                $('#name').text(author);
+                $('#deskripsi').text(deskripsi);
+                $('#judul').text(judul);
+            });
+            $('.like').on('click', function() {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: "{{ route('like') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "POST",
+                    data: {
+                        id: id,
+                    },
+                    success: function() {
+                        location.reload();
+                    }
+                });
+            });
+
+            $('.unlike').on('click', function() {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: "{{ route('unlike') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "POST",
+                    data: {
+                        id: id,
+                    },
+                    success: function() {
+                        location.reload();
+                    }
+                });
+            })
+        });
+    </script>
 @endsection
