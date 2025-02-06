@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Foto;
+use App\Models\KomentarFoto;
 use App\Models\LikeFoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -104,6 +105,47 @@ class FotoController extends Controller
         }
     }
 
+    public function komentar(Request $request)
+    {
+        $validasi = $request->validate([
+            'id' => 'required',
+            'komentar' => 'required',
+        ]);
+
+        $simpan = KomentarFoto::create([
+            'fotos_id' => $request->id,
+            'users_id' => Auth::user()->id,
+            'komentar' => $request->komentar
+        ]);
+
+        if($simpan){
+            return response()->json([
+                'success' => true,
+                'message' => 'Komentar Berhasil',
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'Komentar Gagal',
+            ]);
+        }
+
+    }
+
+    public function Detailkomentar(Request $request, $id)
+    {
+        $validasi = $request->validate([
+            'id' => 'required',
+        ]);
+
+        $data = Foto::find($id);
+        $komentar = KomentarFoto::with('user')->where('fotos_id', $data->id)->get();
+        // dd($komentar);
+        return response()->json([
+            'success' => true,
+            'data' => $komentar
+        ]);
+    }
     /**
      * Display the specified resource.
      */

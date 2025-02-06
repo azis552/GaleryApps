@@ -113,19 +113,31 @@
                                 <hr>
                                 <label for="" class="form-label" id="deskripsi">Deskripsi</label>
                                 <hr>
-                                <label for="">Komentar</label>
+                                @if (Auth::check() == true)
+                                    <label for="">Komentar</label>
+                                    <div class="input-group">
+                                        <input type="hidden" name="id" id="idFoto">
+                                        <textarea name="komentar" id="isiKomentar" class="form-control" id="" cols="30" rows="2"></textarea>
+                                        <button class="btn btn-primary" type="button" id="btnKomentar">Kirim</button>
+                                    </div>
+                                    <hr>
+                                    <div id="komentarAll">
+
+                                    </div>
+                                @endif
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row d-flex justify-content-start ">
             @if ($fotos->isEmpty())
                 <div class="alert alert-danger">Tidak Ada Foto</div>
             @endif
             @foreach ($fotos as $item)
-                <div class="col">
+                <div class="col-auto">
                     <div class="card mt-2" style="width: 18rem;">
                         <img src="{{ asset('storage/images/' . $item->foto) }}"
                             style="text-align: center;width: 285px; height: 200px;" class="card-img-top" alt="...">
@@ -159,17 +171,18 @@
                                                     stroke-linejoin="round" stroke-width="4"
                                                     d="M15 8C8.925 8 4 12.925 4 19c0 11 13 21 20 23.326C31 40 44 30 44 19c0-6.075-4.925-11-11-11c-3.72 0-7.01 1.847-9 4.674A10.99 10.99 0 0 0 15 8" />
                                             </svg>
+                                            <label for=""> {{ $item->likes->count() }} </label>
                                         </button>
                                     @else
                                         {{-- button unlike --}}
                                         <button type="button" class="btn btn-outline-dark unlike"
-                                            data-id="{{ $item->id }}"
-                                            >
+                                            data-id="{{ $item->id }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 48 48">
                                                 <path fill="#f44336"
                                                     d="M34 9c-4.2 0-7.9 2.1-10 5.4C21.9 11.1 18.2 9 14 9C7.4 9 2 14.4 2 21c0 11.9 22 24 22 24s22-12 22-24c0-6.6-5.4-12-12-12" />
                                             </svg>
+                                            <label for=""> {{ $item->likes->count() }} </label>
                                         </button>
                                     @endif
                                 @endif
@@ -219,11 +232,35 @@
                 var deskripsi = $(this).data('deskripsi');
                 var author = $(this).data('nama');
                 var foto = $(this).data('foto');
+                $('#idFoto').val(id);
                 $('#exampleModalLabel').text(judul);
                 $('#foto').attr('src', "{{ asset('storage/images/') }}/" + foto);
                 $('#name').text(author);
                 $('#deskripsi').text(deskripsi);
                 $('#judul').text(judul);
+// alert(id);
+                $.ajax({
+                    url: "{{ route('Detailkomentar', ':id') }}".replace(':id', id),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "PUT",
+                    data: {
+                        id: id,
+                    },
+                    success: function(data) {
+                        var html = '<ul>';
+
+                        for (var i = 0; i < data.data.length; i++) {
+                            html += '<li>' + data.data[i].user.nama_lengkap + '</li> <br>';
+                            html += '' + data.data[i].komentar + '';
+                        }
+
+                        html += '</ul>';
+                        // console.log( data.data.length);
+                        $('#komentarAll').html(html);
+                    }
+                });
             });
             $('.like').on('click', function() {
                 var id = $(this).data('id');
@@ -257,7 +294,26 @@
                         location.reload();
                     }
                 });
-            })
+            });
+            $('#btnKomentar').on('click', function() {
+                var id = $('#idFoto').val();
+                var komentar = $('#isiKomentar').val();
+                // alert(komentar);
+                $.ajax({
+                    url: "{{ route('komentar') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "POST",
+                    data: {
+                        id: id,
+                        komentar: komentar,
+                    },
+                    success: function() {
+                        location.reload();
+                    }
+                });
+            });
         });
     </script>
 @endsection

@@ -18,6 +18,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('album', AlbumController::class);
     Route::post('like', [FotoController::class, 'like'])->name('like');
     Route::post('unlike', [FotoController::class, 'unlike'])->name('unlike');
+    Route::post('komentar', [FotoController::class, 'komentar'])->name('komentar');
+    Route::put('komentar/{id}', [FotoController::class, 'Detailkomentar'])->name('Detailkomentar');
 });
 
 Route::resource('users', UserController::class);
