@@ -6,9 +6,7 @@ use App\Http\Controllers\FotoController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('beranda');
-});
+Route::get('/', [BerandaController::class, 'index'])->name('beranda.index');
 
 
 
@@ -20,6 +18,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('unlike', [FotoController::class, 'unlike'])->name('unlike');
     Route::post('komentar', [FotoController::class, 'komentar'])->name('komentar');
     Route::put('komentar/{id}', [FotoController::class, 'Detailkomentar'])->name('Detailkomentar');
+    Route::post('getUpdate', [BerandaController::class, 'getUpdate'])->name('getUpdate');
 });
 
 Route::resource('users', UserController::class);

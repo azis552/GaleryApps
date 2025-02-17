@@ -23,7 +23,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     @if (Auth::check() == true)
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Beranda</a>
+                            <a class="nav-link active" aria-current="page" href="{{ route('beranda.index') }}">Beranda</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Profil</a>
