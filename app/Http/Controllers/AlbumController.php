@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlbumFoto;
+use Barryvdh\DomPDF\Facade\Pdf; // Pastikan ini sudah diimpor
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AlbumController extends Controller
 {
@@ -13,7 +15,17 @@ class AlbumController extends Controller
      */
     public function index()
     {
-        //
+        $album = AlbumFoto::where('users_id', Auth::user()->id)->get();
+        return view('album', compact('album'));
+    }
+
+    public function download()
+    {
+        $album = AlbumFoto::where('users_id', Auth::user()->id)->get();
+
+        $pdf = Pdf::loadView('albumdownload', compact('album')); // Panggil facade dengan benar
+        
+        return $pdf->download('album-fotos-' . date('Y-m-d') . '-'.Auth::user()->name.' .pdf');
     }
 
     /**
@@ -37,7 +49,13 @@ class AlbumController extends Controller
         $album = AlbumFoto::create($validation);
 
         if ($album) {
-            return redirect()->route('beranda.index')->with('success', 'Album berhasil ditambahkan');
+            $url_sebelumnya = url()->previous();
+
+            if(Str::contains($url_sebelumnya,'profile')) {
+                return redirect()->route('profile')->with('success', 'Album berhasil ditambahkan');
+            }else{
+                return redirect()->route('beranda.index')->with('success', 'Album berhasil ditambahkan');
+            }
         }else{
             return redirect()->route('beranda.index')->with('error', 'Album gagal ditambahkan');
         }

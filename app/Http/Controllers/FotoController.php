@@ -7,6 +7,7 @@ use App\Models\KomentarFoto;
 use App\Models\LikeFoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class FotoController extends Controller
 {
@@ -49,7 +50,15 @@ class FotoController extends Controller
             $fotoSimpan = Foto::create($valiation);
 
             if ($fotoSimpan) {
-                return redirect()->route('beranda.index')->with('success', 'Foto berhasil ditambahkan');
+                $url_sebelumnya = url()->previous();
+
+                if(Str::contains($url_sebelumnya,'profile')) {
+                    return redirect()->route('profile')->with('success', 'Foto berhasil ditambahkan');
+                }else{
+                    return redirect()->route('beranda.index')->with('success', 'Foto berhasil ditambahkan');
+                }
+
+                
             } else {
                 return redirect()->route('beranda.index')->with('error', 'Foto gagal ditambahkan');
             }

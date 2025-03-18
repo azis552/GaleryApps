@@ -23,16 +23,16 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     @if (Auth::check() == true)
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ route('beranda.index') }}">Beranda</a>
+                            <a class="nav-link {{ Route::is('beranda.index') ? 'active' : '' }}" aria-current="page" href="{{ route('beranda.index') }}">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Profil</a>
+                            <a class="nav-link {{ Route::is('profile') ? 'active' : '' }}" href="{{ route('profile') }}">Profil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Album</a>
+                            <a class="nav-link {{ Route::is('album') ? 'active' : '' }}" href="{{ route('album') }}">Album</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="#">Like</a>
+                            <a class="nav-link {{ Route::is('like') ? 'active' : '' }}" href="{{ route('like') }}">Like</a>
                         </li>
                     @else
                         <li class="nav-item">
@@ -122,11 +122,10 @@
                         </div>
                     </div>
                 </div>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-3 " type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success me-2" type="submit">Search</button>
+                <form class="d-flex align-items-center" role="search">
+                    
                     @if (Auth::check() == true)
-                        <input type="text" value="{{ Auth::user()->name }}" readonly class="form-control me-2">
+                        <p  class="me-2 mb-0">{{ Auth::user()->name }}</p>
                         <a class="btn btn-danger" href="{{ route('users.logout') }}">Logout</a>
                     @else
                         <!-- Button trigger modal -->

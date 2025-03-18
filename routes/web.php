@@ -3,6 +3,8 @@
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\FotoController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +21,23 @@ Route::middleware(['auth'])->group(function () {
     Route::post('komentar', [FotoController::class, 'komentar'])->name('komentar');
     Route::put('komentar/{id}', [FotoController::class, 'Detailkomentar'])->name('Detailkomentar');
     Route::post('getUpdate', [BerandaController::class, 'getUpdate'])->name('getUpdate');
+
+    // profile
+    
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile');
+    Route::Put('updateFoto/{id}', [ProfileController::class, 'updateFoto'])->name('updateFoto');
+    Route::Put('updateProfile/{id}', [ProfileController::class, 'updateProfile'])->name('updateProfile');
+    Route::PUT('profile/status/{id}', [ProfileController::class, 'status'])->name('StatusUpdate');
+
+    // Album
+
+    Route::get('album', [AlbumController::class, 'index'])->name('album');
+    Route::get('download', [AlbumController::class, 'download'])->name('album.download');
+
+    // Like
+
+    Route::get('like', [LikeController::class, 'index'])->name('like');
+
 });
 
 Route::resource('users', UserController::class);
